@@ -1,54 +1,26 @@
-terraform {
-  required_providers {
-    proxmox = {
-      source = "bpg/proxmox"
-      version = "0.85.1"
-    }
+resource "proxmox_lxc" "basic" {
+  target_node  = "pve"
+  hostname     = "lxc-basic"
+  ostemplate   = "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst"
+  ostype       = "ubuntu"
+  memory       = "2048"
+  cpulimit     = "2"
+  cores        = "2"
+  swap         = "2048"
+  vmid         = 115
+  start        = true
+  onboot       = true
+  unprivileged = true
+
+  // Terraform will crash without rootfs defined
+  rootfs {
+    storage = "local-lvm"
+    size    = "4G"
+  }
+
+  network {
+    name   = "eth0"
+    bridge = "vmbr0"
+    ip     = "dhcp"
   }
 }
-
-provider "proxmox" {
-
-  #username = var.username
-  #password = var.password
-
-  endpoint = var.api_url
-  api_token = "${var.token_id}=${var.token_secret}"
-  insecure = true
-
-#   ssh {
-#     agent = true
-#     username = "terraform"
-#   }
-}
-
-resource "proxmox_virtual_environment_vm" "vm"{
-    name = "ubuntu-2204-template-clone"
-    node_name = "pve"
-    
-    clone {
-        vm_id = 100
-    }
-
-    agent {
-        enabled = true
-    }
-
-    memory {
-        dedicated = 768
-    }
-
-    initialization {
-        dns {
-            servers = ["1.1.1.1"]
-        }
-        ip_config{
-            ipv4{
-                address = "dhcp"
-            }
-        }
-    }
-   
-}
-
-

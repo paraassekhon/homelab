@@ -11,6 +11,7 @@ resource "proxmox_lxc" "basic" {
   start        = true
   onboot       = true
   unprivileged = true
+  password = var.password
 
   // Terraform will crash without rootfs defined
   rootfs {

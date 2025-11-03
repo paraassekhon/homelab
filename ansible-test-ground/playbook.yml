@@ -1,0 +1,24 @@
+---
+- hosts: test
+  become: yes
+
+  tasks: 
+    - name: Update Packages
+      ansible.builtin.shell: | 
+        sudo apt update 
+    - name: Upgrade Packages
+      ansible.builtin.shell: | 
+        sudo apt upgrade -y 
+    - name: Install Curl
+      ansible.builtin.shell : |
+        sudo apt install curl -y
+    - name: Install adguard
+      ansible.builtin.shell : |
+        bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/adguard.sh)"
+
+
+        
+        
+        
+        
+       

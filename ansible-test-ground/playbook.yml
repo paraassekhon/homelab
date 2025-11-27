@@ -1,24 +1,35 @@
 ---
-- hosts: test
+- hosts: vm
   become: yes
+  # vars_file:
+  #   -vars.yaml
 
+  pre_tasks: 
+  - name: Update Apt Cache
+    apt: 
+      update_cache: true
+      cache_valid_time: 3600
+  
+  handlers: 
+  - name: restart plex
+    service: 
+      name: plexmediaserver
+      state: restarted
+  
   tasks: 
-    - name: Update Packages
-      ansible.builtin.shell: | 
-        sudo apt update 
-    - name: Upgrade Packages
-      ansible.builtin.shell: | 
-        sudo apt upgrade -y 
-    - name: Install Curl
-      ansible.builtin.shell : |
-        sudo apt install curl -y
-    - name: Install adguard
-      ansible.builtin.shell : |
-        bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/adguard.sh)"
+    - name: Get Plex deb package
+      get_url: 
+        url: https://downloads.plex.tv/plex-media-server-new/1.42.2.10156-f737b826c/debian/plexmediaserver_1.42.2.10156-f737b826c_arm64.deb?_gl=1*ceqzls*_gcl_au*MTQxNDk5NjE0NS4xNzY0MjE2NTQy*_ga*MTUzNDExMDYzMC4xNzY0MjE2NTQy*_ga_G6FQWNSENB*czE3NjQyMTY1NDIkbzEkZzEkdDE3NjQyMTcwODMkajQzJGwwJGgwc
+        dest: ~/
+    
+    - name: Install the Plex Deb Package
+      apt: 
+        deb: ~/plexmediaserver_1.42.2.10156-f737b826c_arm64.deb 
+    
+    - name: Start Plex
+      service: 
+        name: plexmediaserver
+        state: started
+        enabled: yes
 
-
-        
-        
-        
-        
-       
+    

@@ -1,0 +1,97 @@
+---
+- hosts: prowlarr
+  become: yes
+  # vars_file:
+  #   -vars.yaml
+
+  pre_tasks: 
+  - name: Update Apt Cache
+    apt: 
+      update_cache: true
+      cache_valid_time: 3600
+
+  - name: Create Prowlarr Group
+    group: 
+      name: prowlarr
+      state: present
+
+  - name: Create Prowlarr User
+    user: 
+      name: prowlarr
+      group: prowlarr
+      state: present
+  
+  handlers: 
+  - name: restart prowlarr
+    service: 
+      name: prowlarr
+      state: restarted
+  
+  tasks: 
+  - name: Make tmp dir
+    file: 
+      path: /tmp
+      state: directory
+      mode: '0755'
+
+  - name: Check Opt dir exists
+    file: 
+      path: /opt
+      state: directory
+      mode: '0755'
+
+  - name: Create Var/Lib/Prowlarr
+    file: 
+      path: /var/lib/prowlarr
+      state: directory
+      mode: '0755'
+  
+  - name: Install Binaries
+    get_url: 
+      url: 'http://prowlarr.servarr.com/v1/update/master/updatefile?os=linux&runtime=netcore&arch=x64'
+      dest: /tmp/prowlarr.tar.gz
+  
+  - name: Uncompress prowlarr
+    unarchive:
+      remote_src: yes
+      src: /tmp/prowlarr.tar.gz
+      dest: /opt
+      
+
+  - name: Give Permissions to Prowlarr User
+    file: 
+      path: /opt/Prowlarr
+      state: directory
+      recurse: yes
+      owner: prowlarr
+  
+  - name: Create prowlarr Service
+    copy:
+      dest: /etc/systemd/system/prowlarr.service
+      content: |
+        [Unit]
+        Description=Prowlarr Daemon
+        After=syslog.target network.target
+
+        [Service]
+        User=root
+        Group=root
+        Type=simple
+        ExecStart=/opt/Prowlarr/Prowlarr -nobrowser -data=/var/lib/prowlarr/
+        TimeoutStopSec=20
+        KillMode=process
+        Restart=on-failure
+
+        [Install]
+        WantedBy=multi-user.target
+
+
+  - name: Start prowlarr
+    service: 
+      name: prowlarr
+      state: started
+      enabled: yes
+    
+
+
+    

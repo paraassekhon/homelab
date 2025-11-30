@@ -1,0 +1,2 @@
+[prowlarr]
+192.168.1.186 ansible_user=root ansible_python_interpreter=/usr/bin/python3

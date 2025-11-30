@@ -5,6 +5,10 @@
 *.tfstate
 *.tfstate.*
 
+#custom
+*.hcl
+*.DS_Store
+
 # Crash log files
 crash.log
 crash.*.log

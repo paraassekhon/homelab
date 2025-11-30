@@ -1,16 +1,16 @@
 resource "proxmox_lxc" "plex-lxc" {
   target_node  = "pve"
-  hostname     = "plex"
+  hostname     = "radarr"
   ostemplate   = "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst"
   ostype       = "ubuntu"
   memory       = "2048"
   cpulimit     = "2"
   cores        = "2"
   swap         = "2048"
-  vmid         = 116
+  vmid         = 117
   start        = true
   onboot       = true
-  unprivileged = false
+  unprivileged = true
   password = var.password
   ssh_public_keys = var.ssh_pub
 
@@ -23,7 +23,7 @@ resource "proxmox_lxc" "plex-lxc" {
   network {
     name   = "eth0"
     bridge = "vmbr0"
-    ip     = "192.168.1.183/24"
+    ip     = "192.168.1.184/24"
     gw = "192.168.1.1"
   }
 }

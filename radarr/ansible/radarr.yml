@@ -1,0 +1,72 @@
+---
+- hosts: radarr
+  become: yes
+  # vars_file:
+  #   -vars.yaml
+
+  pre_tasks: 
+  - name: Update Apt Cache
+    apt: 
+      update_cache: true
+      cache_valid_time: 3600
+  
+  handlers: 
+  - name: restart radarr
+    service: 
+      name: radarr
+      state: restarted
+  
+  tasks: 
+  - name: Make tmp dir
+    file: 
+      path: /tmp
+      state: directory
+      mode: '0755'
+
+  - name: Check Opt dir exists
+    file: 
+      path: /opt
+      state: directory
+      mode: '0755'
+  
+  - name: Install Binaries
+    get_url: 
+      url: 'http://radarr.servarr.com/v1/update/master/updatefile?os=linux&runtime=netcore&arch=x64'
+      dest: /tmp/radarr.tar.gz
+  
+  - name: Uncompress Radarr
+    unarchive:
+      remote_src: yes
+      src: /tmp/radarr.tar.gz
+      dest: /opt
+  
+  - name: Create Radarr Service
+    copy:
+      dest: /etc/systemd/system/radarr.service
+      content: |
+        [Unit]
+        Description=Radarr Daemon
+        After=syslog.target network.target
+
+        [Service]
+        User=root
+        Group=root
+        Type=simple
+        ExecStart=/opt/Radarr/Radarr -nobrowser -data=/var/lib/radarr/
+        TimeoutStopSec=20
+        KillMode=process
+        Restart=on-failure
+
+        [Install]
+        WantedBy=multi-user.target
+
+
+  - name: Start Radarr
+    service: 
+      name: radarr
+      state: started
+      enabled: yes
+    
+
+
+    

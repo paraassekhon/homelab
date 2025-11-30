@@ -1,5 +1,5 @@
 ---
-- hosts: vm
+- hosts: test
   become: yes
   # vars_file:
   #   -vars.yaml
@@ -19,12 +19,12 @@
   tasks: 
     - name: Get Plex deb package
       get_url: 
-        url: https://downloads.plex.tv/plex-media-server-new/1.42.2.10156-f737b826c/debian/plexmediaserver_1.42.2.10156-f737b826c_arm64.deb?_gl=1*ceqzls*_gcl_au*MTQxNDk5NjE0NS4xNzY0MjE2NTQy*_ga*MTUzNDExMDYzMC4xNzY0MjE2NTQy*_ga_G6FQWNSENB*czE3NjQyMTY1NDIkbzEkZzEkdDE3NjQyMTcwODMkajQzJGwwJGgwc
+        url: https://downloads.plex.tv/plex-media-server-new/1.42.2.10156-f737b826c/debian/plexmediaserver_1.42.2.10156-f737b826c_amd64.deb?_gl=1*1gp45gg*_gcl_au*MTk1NDM2MTIwOS4xNzY0NDgwNDU2*_ga*NzYyMjg5NTIwLjE3NjM4MTMyMjU.*_ga_G6FQWNSENB*czE3NjQ0ODA0NTYkbzEkZzEkdDE3NjQ0ODA1NzgkajUyJGwwJGgw
         dest: ~/
     
     - name: Install the Plex Deb Package
       apt: 
-        deb: ~/plexmediaserver_1.42.2.10156-f737b826c_arm64.deb 
+        deb: ~/plexmediaserver_1.42.2.10156-f737b826c_amd64.deb
     
     - name: Start Plex
       service: 

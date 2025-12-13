@@ -1,13 +1,13 @@
-resource "proxmox_lxc" "plex-lxc" {
+resource "proxmox_lxc" "wireguard" {
   target_node  = "pve"
-  hostname     = "prowlarr"
+  hostname     = "wireguard"
   ostemplate   = "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst"
   ostype       = "ubuntu"
-  memory       = "2048"
-  cpulimit     = "2"
-  cores        = "2"
-  swap         = "2048"
-  vmid         = 118
+  memory       = "512"
+  cpulimit     = "1"
+  cores        = "1"
+  swap         = "512"
+  vmid         = 120
   start        = true
   onboot       = true
   unprivileged = true
@@ -23,7 +23,7 @@ resource "proxmox_lxc" "plex-lxc" {
   network {
     name   = "eth0"
     bridge = "vmbr0"
-    ip     = "192.168.1.186/24"
+    ip     = "192.168.1.188/24"
     gw = "192.168.1.1"
   }
 }

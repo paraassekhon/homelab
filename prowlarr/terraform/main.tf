@@ -23,7 +23,7 @@ resource "proxmox_lxc" "prowlarr-lxc" {
   network {
     name   = "eth0"
     bridge = "vmbr0"
-    ip     = "192.168.1.188/24"
+    ip     = "192.168.1.186/24"
     gw = "192.168.1.1"
   }
 }

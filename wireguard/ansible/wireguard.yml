@@ -1,0 +1,58 @@
+---
+- hosts: radarr
+  become: yes
+
+  pre_tasks: 
+  - name: Update Apt Cache
+    apt: 
+      update_cache: true
+      cache_valid_time: 3600
+
+  tasks: 
+  - name: Install Wireguard
+    apt:
+      name: wireguard
+
+  - name: Copy Over ProtonVPN Config
+    copy: 
+      src: ./files/wg0.conf
+      dest: /etc/wireguard/wg0.conf
+      owner: root
+      group: root
+  
+  - name: Install resolvconf
+    apt: 
+      name: resolvconf
+  
+  - name: Install curl
+    apt: 
+      name: curl
+  
+  - name: Setup Wireguard Config
+    shell: 
+    args: 
+      cmd: wg-quick up wg0
+    
+  - name: Enable IP Forwarding
+    copy: 
+      src: ./files/sysctl.conf
+      dest: /etc/sysctl.conf
+      owner: root
+      group: root
+  
+  - name: Restart Sysctl
+    shell: 
+    args: 
+      cmd: sysctl -p
+
+  - name: Enable NAT Masquerade
+    shell: 
+    args: 
+      cmd: iptables -t nat -A POSTROUTING -o 192.168.1.189 -j MASQUERADE
+
+  - name: Output IP Address
+    command: curl icanhazip.com 
+    register: output
+  - debug: var=output.stdout_lines 
+
+    

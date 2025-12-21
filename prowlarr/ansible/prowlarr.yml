@@ -85,7 +85,10 @@
         [Install]
         WantedBy=multi-user.target
 
-
+  - name: Establish VPN Connectivity
+    shell:
+    args:
+      cmd: ip route del default && ip route add default via 192.168.1.189 dev eth0
   - name: Start prowlarr
     service: 
       name: prowlarr

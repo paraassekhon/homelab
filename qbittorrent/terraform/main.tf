@@ -3,14 +3,14 @@ resource "proxmox_lxc" "qbit-lxc" {
   hostname     = "qbittorrent"
   ostemplate   = "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst"
   ostype       = "ubuntu"
-  memory       = "2048"
+  memory       = "4096"
   cpulimit     = "2"
   cores        = "2"
-  swap         = "2048"
+  swap         = "4096"
   vmid         = 119
   start        = true
   onboot       = true
-  unprivileged = true
+  unprivileged = false
   password = var.password
   ssh_public_keys = var.ssh_pub
 
@@ -23,7 +23,7 @@ resource "proxmox_lxc" "qbit-lxc" {
   network {
     name   = "eth0"
     bridge = "vmbr0"
-    ip     = "192.168.1.187/24"
+    ip     = "192.168.1.190/24"
     gw = "192.168.1.1"
   }
 }

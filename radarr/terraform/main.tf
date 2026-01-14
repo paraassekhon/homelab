@@ -10,7 +10,7 @@ resource "proxmox_lxc" "plex-lxc" {
   vmid         = 117
   start        = true
   onboot       = true
-  unprivileged = true
+  unprivileged = false
   password = var.password
   ssh_public_keys = var.ssh_pub
 
